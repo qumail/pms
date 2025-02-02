@@ -8,6 +8,7 @@ import {
   GET_PATIENT_RECORD_BY_ID,
   UPDATE_PATIENT_RECORD,
 } from "../../configs/constants.config.js";
+import { patientRecordUpdate } from "./patient.helper.js";
 
 export const getPatientRecord = async (req, res, next) => {
   try {
@@ -70,11 +71,11 @@ export const updatePatientRecord = async (req, res, next) => {
         message: "Access denied: insufficient permissions",
       });
     }
-    await PatientModel.updateOne({ patient: id }, body);
+    const recordUpdated = await patientRecordUpdate(body, id)
     return res.send({
-      code: "200",
+      code: recordUpdated.code,
       success: true,
-      message: "Patient record has been updated",
+      message: recordUpdated.message,
     });
   } catch (error) {
     return next(error);
