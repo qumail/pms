@@ -1,26 +1,25 @@
-# pms
 Patient Management System for Orthodontists
-Overview
+
+Overview:
 The Patient Management System is a backend service designed to help orthodontists efficiently manage patient records, appointments, and consultations. It ensures secure handling of sensitive medical information and enables role-based access control for different users (patients, doctors, and admin staff).
-Features
-User authentication with JWT-based security.
-CRUD operations for managing patient records.
-Appointment scheduling and management.
-Role-based access control (RBAC) for patients, doctors, and administrative staff.
-Secure storage and retrieval of patient medical history.
-Logging and error handling for monitoring system performance.
-Tech Stack
+
+Features:
+-User authentication with JWT-based security.
+-CRUD operations for managing patient records.
+-Appointment scheduling and management.
+-Role-based access control (RBAC) for patients, doctors, and administrative staff.
+-Secure storage and retrieval of patient medical history.
+-Logging and error handling for monitoring system performance.
+
+Tech Stack:
 Backend: Node.js, Express.js
 Database: MongoDB
-Authentication: JWT, Passport.js, Okta
-Caching: Redis
-Search & Indexing: Elasticsearch
-Testing: Jest
-Containerization: Docker
-API Endpoints
+Authentication: JWT & Bcrypt
+
+API Endpoints:
 Authentication
 1. Register User
-POST /api/auth/register
+POST /node/pms/authentication/register
 
 Request Body:
 {
@@ -37,7 +36,7 @@ Response:
 }
 
 2. Login User
-POST /api/auth/login
+POST /node/pms/authentication/register
 
 Request Body:
 {
@@ -52,9 +51,9 @@ Response:
 }
 
 Patients
-3. Get All Patients (Admin/Doctor Only)
-GET /api/patients
-Authorization: Bearer <token>
+3. Get Patient Record (Patient Only)
+GET /node/pms/patient
+Authorization: JWT <token>
 
 Response:
 [
@@ -67,8 +66,8 @@ Response:
   }
 ]
 
-4. Add a New Patient (Doctor/Admin)
-POST /api/patients
+4. Add a New Patient Record (Doctor/Admin)
+POST /node/pms/patient/:pateintId
 Authorization: Bearer <token>
 
 Request Body:
@@ -81,13 +80,13 @@ Request Body:
 
 Response:
 {
-  "message": "Patient added successfully",
+  "message": "Patient record added successfully",
   "patientId": "60d5b2b8e6f7a45f6c8b4568"
 }
 
 Appointments
 5. Schedule an Appointment (Patient/Doctor)
-POST /api/appointments
+POST /node/pms/appointment
 Authorization: Bearer <token>
 
 Request Body:
@@ -104,7 +103,7 @@ Response:
 }
 
 6. Get Appointments (Doctor/Admin Only)
-GET /api/appointments
+GET /node/pms/appointment/get-apppointments
 Authorization: Bearer <token>
 
 Response:
@@ -127,45 +126,30 @@ Manage patient records & appointments
 Admin
 Full system access
 
-Installation
+Installation:
+
 Prerequisites
 Node.js & npm
 MongoDB
-Redis
-Docker (Optional)
-Steps to Run Locally
-Clone the repository:
- git clone https://github.com/your-repo/patient-management-system.git
-cd patient-management-system
 
+Steps to Run Locally
+
+Clone the repository:
+ -git clone https://github.com/your-repo/patient-management-system.git
+
+ -cd patient-management-system
 
 Install dependencies:
- npm install
+ -npm install
 
 
 Set up environment variables in a .env file:
  PORT=5000
-MONGO_URI=mongodb://localhost:27017/patientDB
-JWT_SECRET=your_secret_key
-REDIS_URL=redis://localhost:6379
-
+ MONGO_URI=mongodb://localhost:27017/pms
+ JWT_SECRET=your_secret_key
 
 Start the server:
- npm start
-
-
-Testing
-Run unit tests using Jest:
-npm test
-
-Docker Setup
-Build the Docker image:
- docker build -t patient-management .
-
-
-Run the container:
- docker run -p 5000:5000 patient-management
-
+ - npm run dev
 
 Contributing
 Fork the repository.
@@ -174,4 +158,3 @@ Commit your changes.
 Push to your fork and submit a pull request.
 License
 This project is licensed under the MIT License.
-
