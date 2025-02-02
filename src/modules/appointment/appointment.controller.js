@@ -85,11 +85,29 @@ export const bookAppointment = async (req, res, next) => {
       });
     }
 
-    const appointmentConfirmation = await bookNewAppointment(
+    const availability = await DoctorAvailability.findOne({
       doctor,
-      appointmentDate,
-      timeSlot
+      date: new Date(appointmentDate).toISOString().split("T")[0], // Check the specific date
+      "availableSlots.time": timeSlot,
+    });
+    if (!availability) {
+      return { code: 202, message: "No available slots at this time." };
+    }
+
+    const newSlot = availability.availableSlots.find(
+      (slot) => slot.time === timeSlot && slot.isAvailable
     );
+    if (!newSlot) {
+      return {
+        code: 202,
+        message: "The selected time slot is no longer available.",
+      };
+    }
+    timeSlot.isAvailable = false;
+    await availability.save();
+
+    await AppointmentModel.create({doctor, appointmentDate, notes, patient, timeSlot});
+    
     return res
       .status(appointmentConfirmation.code)
       .json({ message: appointmentConfirmation.message });
